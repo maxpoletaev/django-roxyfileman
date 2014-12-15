@@ -1,9 +1,11 @@
+from roxyfileman.utils import Upload, json_response, safepath, ok, err
 from django.views.decorators.csrf import csrf_exempt
 from roxyfileman.settings import default_settings
-from roxyfileman.utils import json_response
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.conf import settings
-import os
+from PIL import Image
+import os, shutil
 
 
 def index(request):
@@ -22,29 +24,75 @@ def conf(request):
 def dirlist(request):
     result = []
     for root, dirs, files in os.walk(settings.MEDIA_ROOT):
-        result.append({'p': os.path.relpath(root, settings.MEDIA_ROOT), 'f': len(files), 'd': len(dirs)})
+        result.append({
+            'p': os.path.relpath(root, settings.MEDIA_ROOT),
+            'f': len(files), 'd': len(dirs)
+        })
 
     return json_response(result[1:])
 
 
+@csrf_exempt
 def createdir(request):
-    pass
+    path = request.POST.get('d', '')
+    name = request.POST.get('n', '')
+
+    if path and name:
+        os.makedirs(safepath(settings.MEDIA_ROOT, path, name), exist_ok=True)
+
+    return ok()
 
 
+@csrf_exempt
 def deletedir(request):
-    pass
+    path = request.POST.get('d', '')
+
+    if path:
+        shutil.rmtree(safepath(settings.MEDIA_ROOT, path))
+
+    return ok()
 
 
+@csrf_exempt
 def movedir(request):
-    pass
+    path_from = request.POST.get('d', '')
+    path_to = request.POST.get('n', '')
+
+    if path_from and path_to:
+        shutil.move(
+            safepath(settings.MEDIA_ROOT, path_from),
+            safepath(settings.MEDIA_ROOT, path_to)
+        )
+
+    return ok()
 
 
+@csrf_exempt
 def copydir(request):
-    pass
+    path_from = request.POST.get('d', '')
+    path_to = request.POST.get('n', '')
+
+    if path_from and path_to:
+        shutil.copytree(
+            safepath(settings.MEDIA_ROOT, path_from),
+            safepath(settings.MEDIA_ROOT, path_to, os.path.basename(path_from))
+        )
+
+    return ok()
 
 
+@csrf_exempt
 def renamedir(request):
-    pass
+    path = request.POST.get('d', '')
+    new_name = request.POST.get('n')
+
+    if path and new_name:
+        shutil.move(
+            safepath(settings.MEDIA_ROOT, path),
+            safepath(settings.MEDIA_ROOT, os.path.dirname(path), new_name)
+        )
+
+    return ok()
 
 
 @csrf_exempt
@@ -54,38 +102,102 @@ def fileslist(request):
 
     files = []
     for fname in next(os.walk(full_path))[2]:
-        files.append({'p': os.path.join(settings.MEDIA_URL, rel_path, fname), 'w': 0, 'h': 0, 's': 0})
+        files.append({
+            'p': safepath(settings.MEDIA_URL, rel_path, fname),
+            'w': 0, 'h': 0, 's': 0, 't': 0
+        })
 
     return json_response(files)
 
 
+@csrf_exempt
 def upload(request):
-    pass
+    path = request.POST.get('d', '')
+    files = request.FILES.getlist('files[]')
+
+    if path:
+        for mfile in files:
+            upload = Upload(mfile)
+            print(upload.save(path))
+
+    return ok()
 
 
+@csrf_exempt
 def download(request):
-    pass
+    return err()
 
 
+@csrf_exempt
 def deletefile(request):
-    pass
+    path = request.POST.get('d', '')
+
+    if path:
+        shutil.rm(safepath(settings.MEDIA_ROOT, path))
+
+    return ok()
 
 
+@csrf_exempt
 def uploaddir(request):
-    pass
+    return err()
 
 
+@csrf_exempt
 def movefile(request):
-    pass
+    path_from = request.POST.get('f', '')
+    path_to = request.POST.get('n', '')
+
+    if path_from and path_to:
+        path_from = path_from.replace(settings.MEDIA_URL, )
+
+        shutil.move(
+            safepath(settings.MEDIA_ROOT, path_from),
+            safepath(settings.MEDIA_ROOT, path_to)
+        )
+
+    return ok()
 
 
+@csrf_exempt
 def copyfile(request):
-    pass
+    path_from = request.POST.get('d', '')
+    path_to = request.POST.get('n', '')
+
+    if path_from and path_to:
+        shutil.copy(
+            safepath(settings.MEDIA_ROOT, path_from),
+            safepath(settings.MEDIA_ROOT, path_to, os.path.basename(path_from))
+        )
+
+    return ok()
 
 
+@csrf_exempt
 def renamefile(request):
-    pass
+    path = request.POST.get('d', '')
+    new_name = request.POST.get('n')
+
+    if path and new_name:
+        shutil.move(
+            safepath(settings.MEDIA_ROOT, path),
+            safepath(settings.MEDIA_ROOT, os.path.dirname(path), new_name)
+        )
+
+    return ok()
 
 
-def generatethumb(request):
-    pass
+@csrf_exempt
+def thumb(request):
+    path = request.GET.get('f', '')
+    width = request.GET.get('w', 100)
+    height = request.GET.get('h', 100)
+
+    if path:
+        response = HttpResponse(content_type='image/jpeg')
+        image = Image.open(safepath(settings.MEDIA_ROOT + '/../', path))
+        image.thumbnail((width, height))
+        image.save(response, 'JPEG')
+        return response
+
+    return err()
