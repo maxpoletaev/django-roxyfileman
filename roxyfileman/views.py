@@ -195,7 +195,7 @@ def thumb(request):
 
     if path:
         response = HttpResponse(content_type='image/jpeg')
-        image = Image.open(safepath(settings.MEDIA_ROOT + '/../', path))
+        image = Image.open(safepath(settings.BASE_DIR, path))
         image.thumbnail((width, height))
         image.save(response, 'JPEG')
         return response
