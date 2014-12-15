@@ -33,7 +33,7 @@ Explorer, Firefox, Google Chrome, Safary and Opera.
     ```
     urlpatterns = patterns('',
         ...,
-        url('^roxyfileman/', include('roxyfileman.urls')),
+        url(r'^roxyfileman/', include('roxyfileman.urls')),
     )
     ```
 
@@ -53,4 +53,4 @@ ROXY_INTEGRATION = 'ckeditor'
 ```
 
 
-[1]: /django-ckeditor/django-ckeditor
+[1]: https://github.com/django-ckeditor/django-ckeditor
