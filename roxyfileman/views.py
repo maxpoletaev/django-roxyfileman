@@ -23,9 +23,9 @@ def conf(request):
 @csrf_exempt
 def dirlist(request):
     result = []
-    for root, dirs, files in os.walk(settings.MEDIA_ROOT):
+    for root, dirs, files in os.walk(settings.ROXY_ROOT):
         result.append({
-            'p': os.path.relpath(root, settings.MEDIA_ROOT),
+            'p': os.path.relpath(root, settings.ROXY_ROOT),
             'f': len(files), 'd': len(dirs)
         })
 
@@ -38,7 +38,7 @@ def createdir(request):
     name = request.POST.get('n', '')
 
     if path and name:
-        os.makedirs(safepath(settings.MEDIA_ROOT, path, name), exist_ok=True)
+        os.makedirs(safepath(settings.ROXY_ROOT, path, name), exist_ok=True)
 
     return ok()
 
@@ -48,7 +48,7 @@ def deletedir(request):
     path = request.POST.get('d', '')
 
     if path:
-        shutil.rmtree(safepath(settings.MEDIA_ROOT, path))
+        shutil.rmtree(safepath(settings.ROXY_ROOT, path))
 
     return ok()
 
@@ -60,8 +60,8 @@ def movedir(request):
 
     if path_from and path_to:
         shutil.move(
-            safepath(settings.MEDIA_ROOT, path_from),
-            safepath(settings.MEDIA_ROOT, path_to)
+            safepath(settings.ROXY_ROOT, path_from),
+            safepath(settings.ROXY_ROOT, path_to)
         )
 
     return ok()
@@ -74,8 +74,8 @@ def copydir(request):
 
     if path_from and path_to:
         shutil.copytree(
-            safepath(settings.MEDIA_ROOT, path_from),
-            safepath(settings.MEDIA_ROOT, path_to, os.path.basename(path_from))
+            safepath(settings.ROXY_ROOT, path_from),
+            safepath(settings.ROXY_ROOT, path_to, os.path.basename(path_from))
         )
 
     return ok()
@@ -88,8 +88,8 @@ def renamedir(request):
 
     if path and new_name:
         shutil.move(
-            safepath(settings.MEDIA_ROOT, path),
-            safepath(settings.MEDIA_ROOT, os.path.dirname(path), new_name)
+            safepath(settings.ROXY_ROOT, path),
+            safepath(settings.ROXY_ROOT, os.path.dirname(path), new_name)
         )
 
     return ok()
@@ -98,12 +98,12 @@ def renamedir(request):
 @csrf_exempt
 def fileslist(request):
     rel_path = request.GET.get('d', '.')
-    full_path = os.path.join(settings.MEDIA_ROOT, rel_path)
+    full_path = os.path.join(settings.ROXY_ROOT, rel_path)
 
     files = []
     for fname in next(os.walk(full_path))[2]:
         files.append({
-            'p': safepath(settings.MEDIA_URL, rel_path, fname),
+            'p': os.path.join(rel_path, fname),
             'w': 0, 'h': 0, 's': 0, 't': 0
         })
 
@@ -133,7 +133,7 @@ def deletefile(request):
     path = request.POST.get('d', '')
 
     if path:
-        shutil.rm(safepath(settings.MEDIA_ROOT, path))
+        shutil.rm(safepath(settings.ROXY_ROOT, path))
 
     return ok()
 
@@ -149,11 +149,9 @@ def movefile(request):
     path_to = request.POST.get('n', '')
 
     if path_from and path_to:
-        path_from = path_from.replace(settings.MEDIA_URL, )
-
         shutil.move(
-            safepath(settings.MEDIA_ROOT, path_from),
-            safepath(settings.MEDIA_ROOT, path_to)
+            safepath(settings.ROXY_ROOT, path_from),
+            safepath(settings.ROXY_ROOT, path_to)
         )
 
     return ok()
@@ -166,8 +164,8 @@ def copyfile(request):
 
     if path_from and path_to:
         shutil.copy(
-            safepath(settings.MEDIA_ROOT, path_from),
-            safepath(settings.MEDIA_ROOT, path_to, os.path.basename(path_from))
+            safepath(settings.ROXY_ROOT, path_from),
+            safepath(settings.ROXY_ROOT, path_to, os.path.basename(path_from))
         )
 
     return ok()
@@ -180,8 +178,8 @@ def renamefile(request):
 
     if path and new_name:
         shutil.move(
-            safepath(settings.MEDIA_ROOT, path),
-            safepath(settings.MEDIA_ROOT, os.path.dirname(path), new_name)
+            safepath(settings.ROXY_ROOT, path),
+            safepath(settings.ROXY_ROOT, os.path.dirname(path), new_name)
         )
 
     return ok()
@@ -195,7 +193,7 @@ def thumb(request):
 
     if path:
         response = HttpResponse(content_type='image/jpeg')
-        image = Image.open(safepath(settings.BASE_DIR, path))
+        image = Image.open(safepath(settings.ROXY_ROOT, path))
         image.thumbnail((width, height))
         image.save(response, 'JPEG')
         return response
