@@ -1,0 +1,2 @@
+recursive-include roxyfileman/static *
+recursive-include roxyfileman/templates *
