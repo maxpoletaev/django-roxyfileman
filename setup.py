@@ -10,5 +10,11 @@ setup(
     author_email='zenwalker2@gmail.com',
     url='https://github.com/zenwalker/django-roxyfileman',
     keywords=['filemanager'],
-    license='GPLv3'
+    license='GPLv3',
+    install_requires=['pillow'],
+    classifiers=[
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+    ]
 )
