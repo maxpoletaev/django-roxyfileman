@@ -1,5 +1,5 @@
 /*
-  RoxyFileman - web based file manager. Ready to use with CKEditor, TinyMCE. 
+  RoxyFileman - web based file manager. Ready to use with CKEditor, TinyMCE.
   Can be easily integrated with any other WYSIWYG editor or CMS.
 
   Copyright (C) 2013, RoxyFileman.com - Lyubomir Arsov. All rights reserved.
@@ -116,9 +116,9 @@ RoxyUtils.FileExists = function(path) {
   return ret;
 };
 RoxyUtils.GetFileIcon = function(path){
-  ret = 'images/filetypes/unknown.png';//'images/filetypes/file_extension_' + RoxyUtils.GetFileExt(path).toLowerCase() + '.png';
+  ret = '/static/roxyfileman/images/filetypes/unknown.png';//'/static/roxyfileman/images/filetypes/file_extension_' + RoxyUtils.GetFileExt(path).toLowerCase() + '.png';
   if(fileTypeIcons[RoxyUtils.GetFileExt(path).toLowerCase()]){
-    ret = 'images/filetypes/' + fileTypeIcons[RoxyUtils.GetFileExt(path).toLowerCase()];
+    ret = '/static/roxyfileman/images/filetypes/' + fileTypeIcons[RoxyUtils.GetFileExt(path).toLowerCase()];
   }
 
   return ret;
@@ -210,24 +210,24 @@ RoxyUtils.LoadLang = function(){
   var langUrl = '';
   if(RoxyFilemanConf.LANG && RoxyFilemanConf.LANG.toLowerCase() == 'auto'){
     if(RoxyUtils.GetUrlParam('langCode')){
-      langUrl = 'lang/' + RoxyUtils.GetUrlParam('langCode').substr(0, 2).toLowerCase() + '.json';
+      langUrl = '/static/roxyfileman/lang/' + RoxyUtils.GetUrlParam('langCode').substr(0, 2).toLowerCase() + '.json';
     }
     else {
       var language = window.navigator.userLanguage || window.navigator.language;
-      langUrl = 'lang/' + language.substr(0, 2) + '.json';
+      langUrl = '/static/roxyfileman/lang/' + language.substr(0, 2) + '.json';
     }
     if(!RoxyUtils.FileExists(langUrl))
       langUrl = '';
   }
   else{
     if(RoxyFilemanConf.LANG){
-      langUrl = 'lang/' + RoxyFilemanConf.LANG.substr(0, 2).toLowerCase() + '.json';
+      langUrl = '/static/roxyfileman/lang/' + RoxyFilemanConf.LANG.substr(0, 2).toLowerCase() + '.json';
       if(!RoxyUtils.FileExists(langUrl))
         langUrl = '';
       }
   }
   if(!langUrl)
-    langUrl = 'lang/en.json';
+    langUrl = '/static/roxyfileman/lang/en.json';
 
   $.ajax({
       url: langUrl,
@@ -281,11 +281,11 @@ RoxyUtils.SetCookie = function(key, val, hours, path) {
   if(hours){
     expires.setTime(expires.getTime() + (hours * 3600 * 1000));
   }
-  
+
   if(!path){
      path = '/';
   }
-  
+
   document.cookie = key + '=' + encodeURIComponent(val) + '; path=' + path + (hours?'; expires=' + expires.toGMTString():'');
 }
 RoxyUtils.ToBool = function(val){
@@ -293,11 +293,11 @@ RoxyUtils.ToBool = function(val){
   val = val.toString().toLowerCase();
   if(val == 'true' || val == 'on' || val == 'yes' || val == '1')
     ret = true;
-  
+
   return ret;
 }
 RoxyUtils.UnsetCookie = function(key) {
-  document.cookie = key + "=; expires=Thu, 01 Jan 1972 00:00:00 UTC"; 
+  document.cookie = key + "=; expires=Thu, 01 Jan 1972 00:00:00 UTC";
 }
 
 function t(tag){

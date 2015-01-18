@@ -1,5 +1,5 @@
 /*
-  RoxyFileman - web based file manager. Ready to use with CKEditor, TinyMCE. 
+  RoxyFileman - web based file manager. Ready to use with CKEditor, TinyMCE.
   Can be easily integrated with any other WYSIWYG editor or CMS.
 
   Copyright (C) 2013, RoxyFileman.com - Lyubomir Arsov. All rights reserved.
@@ -82,8 +82,8 @@ function Directory(fullPath, numDirs, numFiles){
   };
   this.GetHtml = function(){
      var html = '<li data-path="'+this.fullPath+'" data-dirs="'+this.dirs+'" data-files="'+this.files+'" class="directory">';
-     html += '<div><img src="images/'+(this.dirs > 0?'dir-plus.png':'blank.gif')+'" class="dirPlus" width="9" height="9">';
-     html += '<img src="images/folder.png" class="dir"><span class="name">'+this.name+' ('+this.files+')</span></div>';
+     html += '<div><img src="/static/roxyfileman/images/'+(this.dirs > 0?'dir-plus.png':'blank.gif')+'" class="dirPlus" width="9" height="9">';
+     html += '<img src="/static/roxyfileman/images/folder.png" class="dir"><span class="name">'+this.name+' ('+this.files+')</span></div>';
      html += '</li>';
 
     return html;
@@ -95,7 +95,7 @@ function Directory(fullPath, numDirs, numFiles){
     if(path){
       var f = File.Parse(path);
       if(f){
-        selectFile(f.GetElement()); 
+        selectFile(f.GetElement());
       }
     }
   };
@@ -103,7 +103,7 @@ function Directory(fullPath, numDirs, numFiles){
     var el = this.GetElement();
     el.children('div').addClass('selected');
     $('#pnlDirList li[data-path!="'+this.fullPath+'"] > div').removeClass('selected');
-    el.children('img.dir').prop('src', 'images/folder.png');
+    el.children('img.dir').prop('src', '/static/roxyfileman/images/folder.png');
     this.SetStatusBar();
     var p = this.GetParent();
     while(p){
@@ -155,11 +155,11 @@ function Directory(fullPath, numDirs, numFiles){
   this.SetOpened = function(){
     var li = this.GetElement();
     if(li.find('li').length < 1)
-      li.children('div').children('.dirPlus').prop('src', 'images/blank.gif');
+      li.children('div').children('.dirPlus').prop('src', '/static/roxyfileman/images/blank.gif');
     else if(this.IsExpanded())
-      li.children('div').children('.dirPlus').prop('src', 'images/dir-minus.png');
+      li.children('div').children('.dirPlus').prop('src', '/static/roxyfileman/images/dir-minus.png');
     else
-      li.children('div').children('.dirPlus').prop('src', 'images/dir-plus.png');
+      li.children('div').children('.dirPlus').prop('src', '/static/roxyfileman/images/dir-plus.png');
   };
   this.Update = function(newPath){
     var el = this.GetElement();
