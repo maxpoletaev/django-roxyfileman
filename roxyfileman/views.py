@@ -130,10 +130,10 @@ def download(request):
 
 @csrf_exempt
 def deletefile(request):
-    path = request.POST.get('d', '')
+    path = request.POST.get('f', '')
 
     if path:
-        shutil.rm(safepath(settings.ROXY_ROOT, path))
+        os.remove(safepath(settings.ROXY_ROOT, path))
 
     return ok()
 
