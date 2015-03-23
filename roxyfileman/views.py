@@ -1,4 +1,6 @@
 import errno
+import tempfile
+import zipfile
 from roxyfileman.utils import Upload, json_response, safepath, ok, err
 from django.views.decorators.csrf import csrf_exempt
 from roxyfileman.settings import default_settings
@@ -7,6 +9,7 @@ from django.shortcuts import render
 from django.conf import settings
 from PIL import Image
 import os, shutil
+from django.core.servers.basehttp import FileWrapper
 
 
 def index(request):
@@ -218,3 +221,45 @@ def thumb(request):
         return response
 
     return err()
+
+
+@csrf_exempt
+def download(request):
+    path = request.GET.get('f', '')
+    real_path = safepath(settings.ROXY_ROOT, path)
+    filename = os.path.basename(real_path)
+
+    with open(real_path) as f:
+        response = HttpResponse(
+            f.read(),
+            content_type='application/octet-stream'
+        )
+    response["Content-Disposition"]= "attachment; filename=%s" % filename
+    return response
+
+
+@csrf_exempt
+def downloaddir(request):
+
+    def zipdir(path, zip):
+        for root, dirs, files in os.walk(path):
+            for file in files:
+                zip.write(os.path.join(root, file))
+
+
+    path = request.GET.get('d', '')
+    real_path = safepath(settings.ROXY_ROOT, path)
+    dirname = os.path.split(real_path)
+
+
+    pid, tmp_file = tempfile.mkstemp()
+    filename = shutil.make_archive(
+        os.path.basename(tmp_file),
+        'zip',
+        real_path
+    )
+
+    with open(filename) as f:
+        response = HttpResponse(f.read(), content_type='application/zip')
+    response['Content-Disposition'] = 'attachment; filename="%s.zip"' % dirname[1]
+    return response
