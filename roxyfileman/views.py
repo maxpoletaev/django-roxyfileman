@@ -102,10 +102,24 @@ def fileslist(request):
 
     files = []
     for fname in next(os.walk(full_path))[2]:
-        files.append({
+        abs_path = os.path.join(full_path, fname)
+
+        file_info = {
             'p': os.path.join(rel_path, fname),
             'w': 0, 'h': 0, 's': 0, 't': 0
-        })
+        }
+        calc_file_info = getattr(settings, 'ROXY_CALC_FILEINFO', False)
+        if calc_file_info:
+            stats = os.stat(abs_path)
+            file_info['s'] = stats.st_size
+            file_info['t'] = stats.st_mtime
+            try:
+                im = Image.open(abs_path)
+                file_info['w'], file_info['h'] = im.size
+            except IOError:
+                # not an image
+                pass
+        files.append(file_info)
 
     return json_response(files)
 
