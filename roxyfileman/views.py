@@ -1,6 +1,5 @@
 import errno
 import tempfile
-import zipfile
 from roxyfileman.utils import Upload, json_response, safepath, ok, err
 from django.views.decorators.csrf import csrf_exempt
 from roxyfileman.settings import default_settings
@@ -241,12 +240,6 @@ def download(request):
 @csrf_exempt
 def downloaddir(request):
 
-    def zipdir(path, zip):
-        for root, dirs, files in os.walk(path):
-            for file in files:
-                zip.write(os.path.join(root, file))
-
-
     path = request.GET.get('d', '')
     real_path = safepath(settings.ROXY_ROOT, path)
     dirname = os.path.split(real_path)
@@ -260,6 +253,6 @@ def downloaddir(request):
     )
 
     with open(filename) as f:
-        response = HttpResponse(f.read(), content_type='application/zip')
+        response = HttpResponse(FileWrapper(f), content_type='application/zip')
     response['Content-Disposition'] = 'attachment; filename="%s.zip"' % dirname[1]
     return response
