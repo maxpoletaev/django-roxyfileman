@@ -192,7 +192,7 @@ def copyfile(request):
 
 @csrf_exempt
 def renamefile(request):
-    path = request.POST.get('d', '')
+    path = request.POST.get('f', '')
     new_name = request.POST.get('n')
 
     if path and new_name:
