@@ -66,6 +66,7 @@
 "E_UploadInvalidPath":"Невозможно загрузить файл - директории не существует",
 "E_FileExtensionForbidden":"Недопустимое расширение файла ",
 "DownloadFile":"Скачать",
+"Download":"Скачать",
 "T_DownloadFile":"Скачать файл",
 "E_CannotDeleteRoot":"Невозможно удалить корневую директорию",
 "file":"файл",

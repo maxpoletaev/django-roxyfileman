@@ -19,4 +19,6 @@ urlpatterns = patterns('',
     url(r'deletefile/', staff_member_required(views.deletefile)),
     url(r'upload/', staff_member_required(views.upload)),
     url(r'thumb/', staff_member_required(views.thumb)),
+    url(r'downloaddir/', staff_member_required(views.downloaddir)),
+    url(r'download/', staff_member_required(views.download)),
 )

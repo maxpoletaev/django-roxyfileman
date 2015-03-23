@@ -1,3 +1,5 @@
+import errno
+import tempfile
 from roxyfileman.utils import Upload, json_response, safepath, ok, err
 from django.views.decorators.csrf import csrf_exempt
 from roxyfileman.settings import default_settings
@@ -6,6 +8,7 @@ from django.shortcuts import render
 from django.conf import settings
 from PIL import Image
 import os, shutil
+from django.core.servers.basehttp import FileWrapper
 
 
 def index(request):
@@ -38,7 +41,11 @@ def createdir(request):
     name = request.POST.get('n', '')
 
     if path and name:
-        os.makedirs(safepath(settings.ROXY_ROOT, path, name), exist_ok=True)
+        try:
+            os.makedirs(safepath(settings.ROXY_ROOT, path, name))
+        except OSError, e:
+            if e.errno != errno.EEXIST:
+                pass
 
     return ok()
 
@@ -102,10 +109,24 @@ def fileslist(request):
 
     files = []
     for fname in next(os.walk(full_path))[2]:
-        files.append({
+        abs_path = os.path.join(full_path, fname)
+
+        file_info = {
             'p': os.path.join(rel_path, fname),
             'w': 0, 'h': 0, 's': 0, 't': 0
-        })
+        }
+        calc_file_info = getattr(settings, 'ROXY_CALC_FILEINFO', False)
+        if calc_file_info:
+            stats = os.stat(abs_path)
+            file_info['s'] = stats.st_size
+            file_info['t'] = stats.st_mtime
+            try:
+                im = Image.open(abs_path)
+                file_info['w'], file_info['h'] = im.size
+            except IOError:
+                # not an image
+                pass
+        files.append(file_info)
 
     return json_response(files)
 
@@ -173,7 +194,7 @@ def copyfile(request):
 
 @csrf_exempt
 def renamefile(request):
-    path = request.POST.get('d', '')
+    path = request.POST.get('f', '')
     new_name = request.POST.get('n')
 
     if path and new_name:
@@ -199,3 +220,39 @@ def thumb(request):
         return response
 
     return err()
+
+
+@csrf_exempt
+def download(request):
+    path = request.GET.get('f', '')
+    real_path = safepath(settings.ROXY_ROOT, path)
+    filename = os.path.basename(real_path)
+
+    with open(real_path) as f:
+        response = HttpResponse(
+            f.read(),
+            content_type='application/octet-stream'
+        )
+    response["Content-Disposition"]= "attachment; filename=%s" % filename
+    return response
+
+
+@csrf_exempt
+def downloaddir(request):
+
+    path = request.GET.get('d', '')
+    real_path = safepath(settings.ROXY_ROOT, path)
+    dirname = os.path.split(real_path)
+
+
+    pid, tmp_file = tempfile.mkstemp()
+    filename = shutil.make_archive(
+        os.path.basename(tmp_file),
+        'zip',
+        real_path
+    )
+
+    with open(filename) as f:
+        response = HttpResponse(FileWrapper(f), content_type='application/zip')
+    response['Content-Disposition'] = 'attachment; filename="%s.zip"' % dirname[1]
+    return response
