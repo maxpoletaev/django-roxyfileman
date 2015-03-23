@@ -1,3 +1,4 @@
+import errno
 from roxyfileman.utils import Upload, json_response, safepath, ok, err
 from django.views.decorators.csrf import csrf_exempt
 from roxyfileman.settings import default_settings
@@ -38,7 +39,11 @@ def createdir(request):
     name = request.POST.get('n', '')
 
     if path and name:
-        os.makedirs(safepath(settings.ROXY_ROOT, path, name), exist_ok=True)
+        try:
+            os.makedirs(safepath(settings.ROXY_ROOT, path, name))
+        except OSError, e:
+            if e.errno != errno.EEXIST:
+                pass
 
     return ok()
 
