@@ -9,7 +9,7 @@ Explorer, Firefox, Google Chrome, Safary and Opera.
 ![Roxy Fileman](screenshot.png)
 
 *   http://www.roxyfileman.com/
-*   Used version: 1.4.1
+*   Used version: 1.4.2
 
 ## Installation
 
