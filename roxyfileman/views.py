@@ -228,7 +228,7 @@ def download(request):
             f.read(),
             content_type='application/octet-stream'
         )
-    response["Content-Disposition"]= "attachment; filename=%s" % filename
+    response['Content-Disposition'] = 'attachment; filename=%s' % filename
     return response
 
 
@@ -236,16 +236,16 @@ def download(request):
 def downloaddir(request):
     path = request.GET.get('d', '')
     real_path = safepath(settings.ROXY_ROOT, path)
-    dirname = os.path.split(real_path)
+    dirname = os.path.split(real_path)[-1]
 
     pid, tmp_file = tempfile.mkstemp()
     filename = shutil.make_archive(
         os.path.basename(tmp_file),
-        'zip',
-        real_path
+        'zip', real_path
     )
 
-    with open(filename) as f:
+    with open(filename, 'rb') as f:
         response = HttpResponse(FileWrapper(f), content_type='application/zip')
-    response['Content-Disposition'] = 'attachment; filename="%s.zip"' % dirname[1]
+
+    response['Content-Disposition'] = 'attachment; filename=%s.zip' % dirname
     return response
