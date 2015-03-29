@@ -41,11 +41,7 @@ def createdir(request):
     name = request.POST.get('n', '')
 
     if path and name:
-        try:
-            os.makedirs(safepath(settings.ROXY_ROOT, path, name))
-        except OSError, e:
-            if e.errno != errno.EEXIST:
-                pass
+        os.makedirs(safepath(settings.ROXY_ROOT, path, name))
 
     return ok()
 
@@ -239,11 +235,9 @@ def download(request):
 
 @csrf_exempt
 def downloaddir(request):
-
     path = request.GET.get('d', '')
     real_path = safepath(settings.ROXY_ROOT, path)
     dirname = os.path.split(real_path)
-
 
     pid, tmp_file = tempfile.mkstemp()
     filename = shutil.make_archive(
