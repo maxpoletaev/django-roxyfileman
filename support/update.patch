@@ -1,0 +1,321 @@
+diff -u ../roxyfileman/static/upstream/js/directory.js ../roxyfileman/static/roxyfileman/js/directory.js
+--- ../roxyfileman/static/upstream/js/directory.js	2014-11-27 21:52:18.000000000 +0300
++++ ../roxyfileman/static/roxyfileman/js/directory.js	2015-01-19 00:49:22.452066323 +0300
+@@ -82,8 +82,8 @@
+   };
+   this.GetHtml = function(){
+      var html = '<li data-path="'+this.fullPath+'" data-dirs="'+this.dirs+'" data-files="'+this.files+'" class="directory">';
+-     html += '<div><img src="images/'+(this.dirs > 0?'dir-plus.png':'blank.gif')+'" class="dirPlus" width="9" height="9">';
+-     html += '<img src="images/folder.png" class="dir"><span class="name">'+this.name+' ('+this.files+')</span></div>';
++     html += '<div><img src="/static/roxyfileman/images/'+(this.dirs > 0?'dir-plus.png':'blank.gif')+'" class="dirPlus" width="9" height="9">';
++     html += '<img src="/static/roxyfileman/images/folder.png" class="dir"><span class="name">'+this.name+' ('+this.files+')</span></div>';
+      html += '</li>';
+ 
+     return html;
+@@ -95,7 +95,7 @@
+     if(path){
+       var f = File.Parse(path);
+       if(f){
+-        selectFile(f.GetElement()); 
++        selectFile(f.GetElement());
+       }
+     }
+   };
+@@ -103,7 +103,7 @@
+     var el = this.GetElement();
+     el.children('div').addClass('selected');
+     $('#pnlDirList li[data-path!="'+this.fullPath+'"] > div').removeClass('selected');
+-    el.children('img.dir').prop('src', 'images/folder.png');
++    el.children('img.dir').prop('src', '/static/roxyfileman/images/folder.png');
+     this.SetStatusBar();
+     var p = this.GetParent();
+     while(p){
+@@ -155,11 +155,11 @@
+   this.SetOpened = function(){
+     var li = this.GetElement();
+     if(li.find('li').length < 1)
+-      li.children('div').children('.dirPlus').prop('src', 'images/blank.gif');
++      li.children('div').children('.dirPlus').prop('src', '/static/roxyfileman/images/blank.gif');
+     else if(this.IsExpanded())
+-      li.children('div').children('.dirPlus').prop('src', 'images/dir-minus.png');
++      li.children('div').children('.dirPlus').prop('src', '/static/roxyfileman/images/dir-minus.png');
+     else
+-      li.children('div').children('.dirPlus').prop('src', 'images/dir-plus.png');
++      li.children('div').children('.dirPlus').prop('src', '/static/roxyfileman/images/dir-plus.png');
+   };
+   this.Update = function(newPath){
+     var el = this.GetElement();
+Only in ../roxyfileman/static/roxyfileman/js: jquery-2.1.1.min.js
+Only in ../roxyfileman/static/roxyfileman/js: jquery-dateFormat.min.js
+Only in ../roxyfileman/static/roxyfileman/js: jquery-ui-1.10.4.custom.min.js
+diff -u ../roxyfileman/static/upstream/js/main.js ../roxyfileman/static/roxyfileman/js/main.js
+--- ../roxyfileman/static/upstream/js/main.js	2014-11-29 14:46:00.000000000 +0300
++++ ../roxyfileman/static/roxyfileman/js/main.js	2015-01-19 00:59:53.952089873 +0300
+@@ -1,5 +1,5 @@
+ /*
+-  RoxyFileman - web based file manager. Ready to use with CKEditor, TinyMCE. 
++  RoxyFileman - web based file manager. Ready to use with CKEditor, TinyMCE.
+   Can be easily integrated with any other WYSIWYG editor or CMS.
+ 
+   Copyright (C) 2013, RoxyFileman.com - Lyubomir Arsov. All rights reserved.
+@@ -50,10 +50,10 @@
+   selectFile(this);
+ }
+ function dragFileOver(){
+-  $(this).children('img.dir').attr('src', 'images/folder-green.png');
++  $(this).children('img.dir').attr('src', '/static/roxyfileman/images/folder-green.png');
+ }
+ function dragFileOut(){
+-  $('#pnlDirList').find('img.dir').attr('src', 'images/folder.png');
++  $('#pnlDirList').find('img.dir').attr('src', '/static/roxyfileman/images/folder.png');
+ }
+ function makeDragFile(e){
+   var f = new File($(e.target).closest('li').attr('data-path'));
+@@ -61,7 +61,7 @@
+ }
+ function makeDragDir(e){
+   var f = new Directory($(e.target).attr('data-path')?$(e.target).attr('data-path'):$(e.target).closest('li').attr('data-path'));
+-  return '<div class="pnlDragDir" data-path="'+f.fullPath+'"><img src="images/folder.png" align="absmiddle">&nbsp;'+f.name+'</div>';
++  return '<div class="pnlDragDir" data-path="'+f.fullPath+'"><img src="/static/roxyfileman/images/folder.png" align="absmiddle">&nbsp;'+f.name+'</div>';
+ }
+ function moveDir(e, ui, obj){
+   var dir = Directory.Parse(ui.draggable.attr('data-path'));
+@@ -143,12 +143,12 @@
+     showUploadList(uploadFileList);
+   }
+   catch(ex){
+-    //alert(ex); 
++    //alert(ex);
+   }
+ }
+ function findUploadElement(i){
+   return $('#uploadFilesList .fileUpload:eq(' + (i)+ ')');
+-} 
++}
+ function updateUploadProgress(e, i){
+   var el = findUploadElement(i);
+   var percent = 99;
+@@ -187,7 +187,7 @@
+     httpRes = JSON.parse(e.target.responseText);
+   }
+   catch(ex){}
+-  
++
+   if((httpRes && httpRes.res == 'error') || res != 'ok'){
+     res = 'error';
+     setUploadError(i);
+@@ -196,7 +196,7 @@
+     res = 'ok';
+     setUploadSuccess(i)
+   }
+-    
++
+   el.attr('data-ulpoad', res);
+   checkUploadResult();
+ }
+@@ -271,7 +271,7 @@
+         if(window.FormData && window.XMLHttpRequest && window.FileList && uploadFileList && uploadFileList.length > 0){
+           for(i = 0; i < uploadFileList.length; i++){
+             fileUpload(uploadFileList[i], i);
+-          } 
++          }
+         }
+         else{
+           document.forms['addfile'].action = RoxyFilemanConf.UPLOAD;
+@@ -280,7 +280,7 @@
+       }
+     }
+   }};
+-  
++
+   dialogButtons[t('Cancel')] = function(){$('#dlgAddFile').dialog('close');};
+   $('#dlgAddFile').dialog({title:t('T_AddFile'),modal:true,buttons:dialogButtons,width:400});
+ }
+@@ -475,7 +475,7 @@
+     t = $('#hdViewType').val();
+   $('.btnView').removeClass('selected');
+   if(t == 'thumb'){
+-    $('#pnlFileList .icon').attr('src', 'images/blank.gif');
++    $('#pnlFileList .icon').attr('src', '/static/roxyfileman/images/blank.gif');
+     $('#pnlFileList').addClass('thumbView');
+     if($('#dynStyle').length == 0){
+       $('head').append('<style id="dynStyle" />');
+@@ -486,7 +486,7 @@
+       $('#dynStyle').html(rules);
+     }
+     $('#pnlFileList li').each(function(){
+-      
++
+       //$('ul#pnlFileList.thumbView li').css('width', RoxyFilemanConf.THUMBS_VIEW_WIDTH + 'px');
+       //$('ul#pnlFileList.thumbView li').css('height', (parseInt(RoxyFilemanConf.THUMBS_VIEW_HEIGHT) + 20) + 'px');
+       //$('ul#pnlFileList.thumbView .icon').css('width', RoxyFilemanConf.THUMBS_VIEW_WIDTH + 'px');
+@@ -692,7 +692,7 @@
+         catch(ex){}
+       break;
+       default:
+-        filePath = GetSelectedValue();     
++        filePath = GetSelectedValue();
+       break;
+     }
+   }
+@@ -704,7 +704,7 @@
+       filePath = filePath.substr(prefix.length);
+     }
+   }
+-  
++
+   return filePath;
+ }
+ function initSelection(filePath){
+@@ -721,14 +721,14 @@
+     do{
+       if(tmp){
+         tmp.Expand(true);
+-        hasSelection = true; 
++        hasSelection = true;
+       }
+       tmp = Directory.Parse(tmp.path);
+     }while(tmp);
+-    
++
+     if(d){
+       d.Select(filePath);
+-      hasSelection = true; 
++      hasSelection = true;
+     }
+   }
+   if(!hasSelection)
+@@ -739,24 +739,24 @@
+   var d = new Directory();
+   d.LoadAll();
+   $('#wraper').show();
+-  
++
+   window.setTimeout('initSelection()', 100);
+ 
+   RoxyUtils.Translate();
+   $('body').click(function(){
+     closeMenus();
+   });
+-  
++
+   var viewType = RoxyUtils.GetCookie('roxyview');
+   if(!viewType)
+     viewType = RoxyFilemanConf.DEFAULTVIEW;
+   if(viewType)
+     switchView(viewType);
+-    
++
+   ResizeLists();
+   $(".actions input").tooltip({track: true});
+   $( window ).resize(ResizeLists);
+-  
++
+   if(getFilemanIntegration() == 'tinymce3'){
+     $('body').append('<script src="js/tiny_mce_popup.js"><\/script>');
+   }
+@@ -772,7 +772,7 @@
+       e.stopPropagation();
+       dropFiles(e);
+     };
+-    
++
+     dropZone = document.getElementById('dlgAddFile');
+     dropZone.ondragover = function () { return false; };
+     dropZone.ondragend = function () { return false; };
+@@ -787,7 +787,7 @@
+   var integration = RoxyUtils.GetUrlParam('integration');
+   if(!integration)
+     integration = RoxyFilemanConf.INTEGRATION;
+-    
++
+   return integration.toLowerCase();
+ }
+ function setFile(){
+@@ -835,4 +835,4 @@
+       FileSelected(f);
+     break;
+   }
+-}
+\ No newline at end of file
++}
+Only in ../roxyfileman/static/roxyfileman/js: patch.js
+diff -u ../roxyfileman/static/upstream/js/utils.js ../roxyfileman/static/roxyfileman/js/utils.js
+--- ../roxyfileman/static/upstream/js/utils.js	2014-11-28 16:44:42.000000000 +0300
++++ ../roxyfileman/static/roxyfileman/js/utils.js	2015-01-19 00:50:21.096068510 +0300
+@@ -1,5 +1,5 @@
+ /*
+-  RoxyFileman - web based file manager. Ready to use with CKEditor, TinyMCE. 
++  RoxyFileman - web based file manager. Ready to use with CKEditor, TinyMCE.
+   Can be easily integrated with any other WYSIWYG editor or CMS.
+ 
+   Copyright (C) 2013, RoxyFileman.com - Lyubomir Arsov. All rights reserved.
+@@ -116,9 +116,9 @@
+   return ret;
+ };
+ RoxyUtils.GetFileIcon = function(path){
+-  ret = 'images/filetypes/unknown.png';//'images/filetypes/file_extension_' + RoxyUtils.GetFileExt(path).toLowerCase() + '.png';
++  ret = '/static/roxyfileman/images/filetypes/unknown.png';//'/static/roxyfileman/images/filetypes/file_extension_' + RoxyUtils.GetFileExt(path).toLowerCase() + '.png';
+   if(fileTypeIcons[RoxyUtils.GetFileExt(path).toLowerCase()]){
+-    ret = 'images/filetypes/' + fileTypeIcons[RoxyUtils.GetFileExt(path).toLowerCase()];
++    ret = '/static/roxyfileman/images/filetypes/' + fileTypeIcons[RoxyUtils.GetFileExt(path).toLowerCase()];
+   }
+ 
+   return ret;
+@@ -210,24 +210,24 @@
+   var langUrl = '';
+   if(RoxyFilemanConf.LANG && RoxyFilemanConf.LANG.toLowerCase() == 'auto'){
+     if(RoxyUtils.GetUrlParam('langCode')){
+-      langUrl = 'lang/' + RoxyUtils.GetUrlParam('langCode').substr(0, 2).toLowerCase() + '.json';
++      langUrl = '/static/roxyfileman/lang/' + RoxyUtils.GetUrlParam('langCode').substr(0, 2).toLowerCase() + '.json';
+     }
+     else {
+       var language = window.navigator.userLanguage || window.navigator.language;
+-      langUrl = 'lang/' + language.substr(0, 2) + '.json';
++      langUrl = '/static/roxyfileman/lang/' + language.substr(0, 2) + '.json';
+     }
+     if(!RoxyUtils.FileExists(langUrl))
+       langUrl = '';
+   }
+   else{
+     if(RoxyFilemanConf.LANG){
+-      langUrl = 'lang/' + RoxyFilemanConf.LANG.substr(0, 2).toLowerCase() + '.json';
++      langUrl = '/static/roxyfileman/lang/' + RoxyFilemanConf.LANG.substr(0, 2).toLowerCase() + '.json';
+       if(!RoxyUtils.FileExists(langUrl))
+         langUrl = '';
+       }
+   }
+   if(!langUrl)
+-    langUrl = 'lang/en.json';
++    langUrl = '/static/roxyfileman/lang/en.json';
+ 
+   $.ajax({
+       url: langUrl,
+@@ -281,11 +281,11 @@
+   if(hours){
+     expires.setTime(expires.getTime() + (hours * 3600 * 1000));
+   }
+-  
++
+   if(!path){
+      path = '/';
+   }
+-  
++
+   document.cookie = key + '=' + encodeURIComponent(val) + '; path=' + path + (hours?'; expires=' + expires.toGMTString():'');
+ }
+ RoxyUtils.ToBool = function(val){
+@@ -293,11 +293,11 @@
+   val = val.toString().toLowerCase();
+   if(val == 'true' || val == 'on' || val == 'yes' || val == '1')
+     ret = true;
+-  
++
+   return ret;
+ }
+ RoxyUtils.UnsetCookie = function(key) {
+-  document.cookie = key + "=; expires=Thu, 01 Jan 1972 00:00:00 UTC"; 
++  document.cookie = key + "=; expires=Thu, 01 Jan 1972 00:00:00 UTC";
+ }
+ 
+ function t(tag){
