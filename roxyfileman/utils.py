@@ -31,16 +31,16 @@ def safepath(path, *paths):
 class Upload:
     def __init__(self, uploaded_file):
         self.raw_name, self.ext = os.path.splitext(uploaded_file.name)
-        self.storage = FileSystemStorage(location=settings.MEDIA_ROOT)
+        self.storage = FileSystemStorage(location=settings.ROXY_ROOT)
         self.name = self.build_name(self.raw_name)
         self.file = uploaded_file
 
     def save(self, dir):
-        self.create_dir(os.path.join(settings.MEDIA_ROOT, dir))
+        self.create_dir(os.path.join(settings.ROXY_ROOT, dir))
 
         path = os.path.join(dir, self.name + self.ext)
         self.storage.save(path, ContentFile(self.file.read()))
-        return os.path.join(os.path.dirname(settings.MEDIA_ROOT), path)
+        return os.path.join(os.path.dirname(settings.ROXY_ROOT), path)
 
     @staticmethod
     def build_name(name):
