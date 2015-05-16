@@ -21,7 +21,7 @@ Explorer, Firefox, Google Chrome, Safary and Opera.
 
 2. Add application into your `INSTALLED_APPS` config:
 
-    ```
+    ```py
     INSTALLED_APPS = [
         ...,
         'roxyfileman',
@@ -30,7 +30,7 @@ Explorer, Firefox, Google Chrome, Safary and Opera.
 
 3. Bind url to application in `urls.py`:
 
-    ```
+    ```py
     urlpatterns = patterns('',
         ...,
         url(r'^roxyfileman/', include('roxyfileman.urls')),
@@ -39,10 +39,10 @@ Explorer, Firefox, Google Chrome, Safary and Opera.
 
 ## Integrate with CKEditor
 
-If you use [django-ckeditor-updated][1], you can integrate Roxy Fileman with
+If you use [django-ckeditor][1], you can integrate Roxy Fileman with
 your editor. Add this in your config file:
 
-```
+```py
 CKEDITOR_CONFIGS = {
     'default': {
         'filebrowserBrowseUrl': '/roxyfileman/',
