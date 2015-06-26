@@ -36,7 +36,8 @@ default_settings = {
     'OPEN_LAST_DIR': 'yes',
 }
 
-for key, value in default_settings.items(): rkey = 'ROXY_' + key
+for key, value in default_settings.items():
+    rkey = 'ROXY_' + key
     if not hasattr(settings, rkey): setattr(settings, rkey, value)
 
 if not hasattr(settings, 'ROXY_ROOT'): setattr(settings, 'ROXY_ROOT', settings.MEDIA_ROOT)
