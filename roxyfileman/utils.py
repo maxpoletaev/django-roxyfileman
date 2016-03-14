@@ -2,7 +2,10 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from django.core.files.storage import FileSystemStorage
 from django.core.files.base import ContentFile
 from django.conf import settings
-import os, time, uuid, json, re
+import uuid
+import json
+import os
+import re
 
 
 def json_response(data, success=True):
@@ -44,8 +47,7 @@ class Upload:
 
     @staticmethod
     def build_name(name):
-        string_encode = ('%s&%s' % (name, time.time())).encode('utf-8')
-        return uuid.uuid5(uuid.NAMESPACE_DNS, string_encode).hex
+        return str(uuid.uuid4())
 
     @staticmethod
     def create_dir(path):
