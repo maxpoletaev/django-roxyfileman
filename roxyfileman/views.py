@@ -209,7 +209,7 @@ def thumb(request):
 
     if path:
         response = HttpResponse(content_type='image/jpeg')
-        image = Image.open(safepath(settings.ROXY_ROOT, path))
+        image = Image.open(safepath(settings.ROXY_ROOT, path)).convert('RGB')
         image.thumbnail((width, height))
         image.save(response, 'JPEG')
         return response
