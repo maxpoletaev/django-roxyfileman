@@ -1,9 +1,9 @@
 from django.contrib.admin.views.decorators import staff_member_required
-from django.conf.urls import url, patterns
+from django.conf.urls import url
 from roxyfileman import views
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^$', staff_member_required(views.index)),
     url(r'conf\.json', staff_member_required(views.conf)),
     url(r'dirlist/', staff_member_required(views.dirlist)),
@@ -21,4 +21,4 @@ urlpatterns = patterns('',
     url(r'thumb/', staff_member_required(views.thumb)),
     url(r'downloaddir/', staff_member_required(views.downloaddir)),
     url(r'download/', staff_member_required(views.download)),
-)
+]
