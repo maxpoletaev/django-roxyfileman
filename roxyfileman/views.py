@@ -1,14 +1,13 @@
-import errno
-import tempfile
 from roxyfileman.utils import Upload, json_response, safepath, ok, err
 from django.views.decorators.csrf import csrf_exempt
 from roxyfileman.settings import default_settings
-from django.http import HttpResponse
+from django.http import HttpResponse, FileResponse
 from django.shortcuts import render
 from django.conf import settings
 from PIL import Image
-import os, shutil
-from django.core.servers.basehttp import FileWrapper
+import tempfile
+import shutil
+import os
 
 
 def index(request):
@@ -140,11 +139,6 @@ def upload(request):
 
 
 @csrf_exempt
-def download(request):
-    return err()
-
-
-@csrf_exempt
 def deletefile(request):
     path = request.POST.get('f', '')
 
@@ -223,11 +217,7 @@ def download(request):
     real_path = safepath(settings.ROXY_ROOT, path)
     filename = os.path.basename(real_path)
 
-    with open(real_path) as f:
-        response = HttpResponse(
-            f.read(),
-            content_type='application/octet-stream'
-        )
+    response = FileResponse(open(real_path, 'rb'))
     response['Content-Disposition'] = 'attachment; filename=%s' % filename
     return response
 
@@ -244,8 +234,6 @@ def downloaddir(request):
         'zip', real_path
     )
 
-    with open(filename, 'rb') as f:
-        response = HttpResponse(FileWrapper(f), content_type='application/zip')
-
+    response = FileResponse(open(filename, 'rb'), content_type='application/zip')
     response['Content-Disposition'] = 'attachment; filename=%s.zip' % dirname
     return response
