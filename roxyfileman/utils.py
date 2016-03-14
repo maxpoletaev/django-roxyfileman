@@ -44,7 +44,7 @@ class Upload:
 
     @staticmethod
     def build_name(name):
-        string_encode = ('%s&%s' % (name, time.time()))
+        string_encode = ('%s&%s' % (name, time.time())).encode('utf-8')
         return uuid.uuid5(uuid.NAMESPACE_DNS, string_encode).hex
 
     @staticmethod
