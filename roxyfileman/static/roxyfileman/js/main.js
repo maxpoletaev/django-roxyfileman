@@ -851,7 +851,9 @@ function FileSelected(file){
    *
    */
   // Get the ID of the input to fill
-  var fieldId = RoxyUtils.GetUrlParam('txtFieldId');
-  $(window.parent.document).find('#' + fieldId).attr('value', file.fullPath);
+  var fieldId = RoxyUtils.GetUrlParam('txtFieldId'),
+      prefix_dir = RoxyUtils.GetUrlParam('prefix');
+  $(window.parent.document).find('#' + fieldId).attr('value', prefix_dir + file.fullPath);
   window.parent.closeCustomRoxy2();
 }
+
