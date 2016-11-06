@@ -2,7 +2,7 @@ from django.conf import settings
 
 default_settings = {
     'FILES_ROOT': '',
-    'RETURN_URL_PREFIX': '/media/',
+    'RETURN_URL_PREFIX': '/media',
     'SESSION_PATH_KEY': '',
     'THUMBS_VIEW_WIDTH': '140',
     'THUMBS_VIEW_HEIGHT': '120',
@@ -34,12 +34,12 @@ default_settings = {
     'LANG': 'auto',
     'DATEFORMAT': 'dd/MM/yyyy HH:mm',
     'OPEN_LAST_DIR': 'yes',
+
+    'VIEW_DECORATOR': 'django.contrib.admin.views.decorators.staff_member_required',
+    'ROOT': settings.MEDIA_ROOT,
 }
 
 for key, value in default_settings.items():
     rkey = 'ROXY_' + key
     if not hasattr(settings, rkey):
         setattr(settings, rkey, value)
-
-if not hasattr(settings, 'ROXY_ROOT'):
-    setattr(settings, 'ROXY_ROOT', settings.MEDIA_ROOT)

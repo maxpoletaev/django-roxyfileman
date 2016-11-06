@@ -1,24 +1,30 @@
-from django.contrib.admin.views.decorators import staff_member_required
+from django.utils.module_loading import import_string
+from django.conf import settings
 from django.conf.urls import url
 from roxyfileman import views
 
+if settings.ROXY_VIEW_DECORATOR is not None:
+    view_decorator = import_string(settings.ROXY_VIEW_DECORATOR)
+else:
+    view_decorator = lambda f: f
+
 
 urlpatterns = [
-    url(r'^$', staff_member_required(views.index)),
-    url(r'conf\.json', staff_member_required(views.conf)),
-    url(r'dirlist/', staff_member_required(views.dirlist)),
-    url(r'fileslist/', staff_member_required(views.fileslist)),
-    url(r'createdir/', staff_member_required(views.createdir)),
-    url(r'deletedir/', staff_member_required(views.deletedir)),
-    url(r'movedir/', staff_member_required(views.movedir)),
-    url(r'renamedir/', staff_member_required(views.renamedir)),
-    url(r'copydir/', staff_member_required(views.copydir)),
-    url(r'renamefile/', staff_member_required(views.renamefile)),
-    url(r'movefile/', staff_member_required(views.movefile)),
-    url(r'copyfile/', staff_member_required(views.copyfile)),
-    url(r'deletefile/', staff_member_required(views.deletefile)),
-    url(r'upload/', staff_member_required(views.upload)),
-    url(r'thumb/', staff_member_required(views.thumb)),
-    url(r'downloaddir/', staff_member_required(views.downloaddir)),
-    url(r'download/', staff_member_required(views.download)),
+    url(r'^$', view_decorator(views.index)),
+    url(r'conf\.json', view_decorator(views.conf)),
+    url(r'dirlist/', view_decorator(views.dirlist)),
+    url(r'fileslist/', view_decorator(views.fileslist)),
+    url(r'createdir/', view_decorator(views.createdir)),
+    url(r'deletedir/', view_decorator(views.deletedir)),
+    url(r'movedir/', view_decorator(views.movedir)),
+    url(r'renamedir/', view_decorator(views.renamedir)),
+    url(r'copydir/', view_decorator(views.copydir)),
+    url(r'renamefile/', view_decorator(views.renamefile)),
+    url(r'movefile/', view_decorator(views.movefile)),
+    url(r'copyfile/', view_decorator(views.copyfile)),
+    url(r'deletefile/', view_decorator(views.deletefile)),
+    url(r'upload/', view_decorator(views.upload)),
+    url(r'thumb/', view_decorator(views.thumb)),
+    url(r'downloaddir/', view_decorator(views.downloaddir)),
+    url(r'download/', view_decorator(views.download)),
 ]

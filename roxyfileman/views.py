@@ -107,7 +107,7 @@ def fileslist(request):
         abs_path = os.path.join(full_path, fname)
 
         file_info = {
-            'p': os.path.join(rel_path, fname),
+            'p': '/' + os.path.join(rel_path, fname),
             'w': 0, 'h': 0, 's': 0, 't': 0
         }
 
@@ -122,6 +122,7 @@ def fileslist(request):
             pass
 
         files.append(file_info)
+
     return json_response(files)
 
 
@@ -133,7 +134,6 @@ def upload(request):
     if path:
         for mfile in files:
             upload = Upload(mfile)
-            print(upload.save(path))
 
     return ok()
 
