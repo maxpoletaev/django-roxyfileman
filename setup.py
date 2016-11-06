@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='django-roxyfileman',
-    version='1.142.3',
+    version='1.2',
     packages=find_packages(),
     include_package_data=True,
     description='Integrate Django with Roxy Fileman',
