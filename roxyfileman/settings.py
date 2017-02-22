@@ -7,7 +7,7 @@ default_settings = {
     'THUMBS_VIEW_WIDTH': '140',
     'THUMBS_VIEW_HEIGHT': '120',
     'PREVIEW_THUMB_WIDTH': '100',
-    'PREVIEW_THUMB_HEIGHT':'100',
+    'PREVIEW_THUMB_HEIGHT': '100',
     'MAX_IMAGE_WIDTH': '1000',
     'MAX_IMAGE_HEIGHT': '1000',
     'INTEGRATION': 'custom',
